@@ -18,6 +18,40 @@ print("B")
 # A
 # Hello, World!
 ```
+Generator goroutines
+```python
+from pygoro import go
+import time
+
+def test_func(text, data):
+    time.sleep(1)
+    print("A")
+    print(text, data)
+    yield
+
+go(test_func("Hello,", data="World!"))
+print("B")
+
+# B
+# A
+# Hello, World!
+```
+Getting return
+```python
+from pygoro import go
+import time
+
+def test_func():
+    yield 1
+    time.sleep(1)
+    yield 2
+
+for value in go(test_func()).ret:
+    print(value)
+
+# 1
+# 2
+```
 Channels
 ```python
 from pygoro import go, Channel, NoObject
