@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "pygoro"
+version = "0.1.0"
+description = "Go goroutines and channels implementation in python"
+authors = ["Andrii Kryvyi <kryvyi.andriy@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+repository = "https://github.com/draklowell/pygoro"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
