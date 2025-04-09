@@ -1,17 +1,24 @@
-from typing import Any, Callable, Dict, Iterable, List, Union
-import threading
+from threading import Thread
+from typing import Any, Callable, Generic, Iterable, TypeVar
 
 from pygoro.channel import Channel
 
-GOROUTINE_COUNT = 0
-GOROUTINE_NAME = "Goroutine-{id}"
+T = TypeVar("T")
 
 
-class Goroutine(threading.Thread):
-    def __init__(self, function: Union[Callable[..., Any], Iterable[Any]], arguments: List[Any], kwarguments: List[Any]) -> None:
-        global GOROUTINE_COUNT
-        GOROUTINE_COUNT += 1
-        super().__init__(name=GOROUTINE_NAME.format(id=GOROUTINE_COUNT))
+class Goroutine(Thread, Generic[T]):
+    function: Callable[..., T] | Iterable[T]
+    arguments: list[Any]
+    kwarguments: dict[str, Any]
+    ret: Channel[T]
+
+    def __init__(
+        self,
+        function: Callable[..., T] | Iterable[T],
+        arguments: list[Any],
+        kwarguments: dict[str, Any],
+    ) -> None:
+        super().__init__()
 
         self.function = function
         self.arguments = arguments
@@ -26,7 +33,10 @@ class Goroutine(threading.Thread):
         else:
             self.ret << self.function(*self.arguments, **self.kwarguments)
 
-def go(function: Union[Callable[..., Any], Iterable[Any]], *arguments: List[Any], **kwarguments: Dict[str, Any]) -> Goroutine:
+
+def go(
+    function: Callable[..., T] | Iterable[T], *arguments: Any, **kwarguments: Any
+) -> Goroutine[T]:
     goroutine = Goroutine(function, arguments, kwarguments)
     goroutine.start()
     return goroutine
