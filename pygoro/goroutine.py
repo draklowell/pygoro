@@ -1,7 +1,7 @@
 from typing import Any, Callable, Dict, Iterable, List, Union
 import threading
 
-from pygoro.channel import Channel, NoObject
+from pygoro.channel import Channel
 
 GOROUTINE_COUNT = 0
 GOROUTINE_NAME = "Goroutine-{id}"

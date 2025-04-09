@@ -23,16 +23,16 @@ class Timer:
         while not self.channel.closed:
             if time.time() >= timeend:
                 break
-        if not self.channel.closed:
-            self.finish()
+        else:
+            return
 
-        yield
-    
+        yield from self.finish()
+
     def finish(self):
         self.channel << self.counter
         self.counter += 1
         if self.interval:
-            self.wait()
+            yield from self.wait()
         else:
             self.channel.close()
 
