@@ -29,7 +29,7 @@ class Timer:
         yield from self.finish()
 
     def finish(self) -> Generator[None, None, None]:
-        self.channel << self.counter
+        self.channel <<= self.counter
         self.counter += 1
 
         if self.repeatable:

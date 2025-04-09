@@ -6,15 +6,15 @@ from pygoro import Channel, NoObject, go
 def test_func(chan: Channel[int], range_size: int):
     for i in range(range_size):
         time.sleep(1)
-        chan << i  # same as chan.push(i)
+        chan <<= i  # same as chan.push(i)
     chan.close()
 
 
 def test_func_flush(chan: Channel[int], range_size: int):
     for i in range(range_size):
         time.sleep(1)
-        chan << i  # same as chan.push(i)
-        chan << NoObject  # same as chan.flush()
+        chan <<= i  # same as chan.push(i)
+        chan <<= NoObject  # same as chan.flush()
     chan.close()
 
 

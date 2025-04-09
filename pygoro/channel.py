@@ -30,6 +30,10 @@ class Channel(Generic[T]):
     def __lshift__(self, value: T | NoObjectType) -> None:
         self.push(value)
 
+    def __ilshift__(self, value: T | NoObjectType) -> None:
+        self.push(value)
+        return self
+
     def __next__(self) -> T:
         while (not self.closed) and not self.queue:
             continue

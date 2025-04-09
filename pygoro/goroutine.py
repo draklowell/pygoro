@@ -28,10 +28,10 @@ class Goroutine(Thread, Generic[T]):
     def run(self) -> None:
         if isinstance(self.function, Iterable):
             for result in self.function:
-                self.ret << result
+                self.ret <<= result
             self.ret.close()
         else:
-            self.ret << self.function(*self.arguments, **self.kwarguments)
+            self.ret <<= self.function(*self.arguments, **self.kwarguments)
 
 
 def go(
