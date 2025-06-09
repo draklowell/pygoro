@@ -3,11 +3,10 @@ import time
 from pygoro import go
 
 
-def test_func(text: str, data: str) -> int:
+def test_func(text: str, data: str):
     time.sleep(1)
     print("A")
     print(text, data)
-    return 10
 
 
 goro = go(test_func, "Hello,", data="World!")

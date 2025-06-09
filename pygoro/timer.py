@@ -6,6 +6,22 @@ from pygoro.goroutine import go
 
 
 class Timer:
+    """
+    Timer class to create a timer that sends a value to a channel
+    after a specified interval. The timer can be repeatable or one-time.
+
+    Args:
+        interval: The time interval in seconds.
+        repeatable: If True, the timer will repeat after the interval.
+                    If False, the timer will stop after one interval.
+
+    Attributes:
+        interval: The time interval in seconds.
+        counter: The number of times the timer has triggered.
+        repeatable: If True, the timer will repeat after the interval.
+        channel: The channel to send the timer value to.
+    """
+
     interval: float
     counter: int
     repeatable: bool
@@ -16,26 +32,30 @@ class Timer:
         self.counter = 0
         self.repeatable = repeatable
         self.channel = Channel()
-        go(self.wait())
+        go(self.run())
 
-    def wait(self) -> Generator[None, None, None]:
-        timeend = time.time() + self.interval
+    def run(self) -> Generator[None, None, None]:
+        """
+        Run the timer.
+        """
+        end = time.time() + self.interval
         while not self.channel.closed:
-            if time.time() >= timeend:
-                break
+            if time.time() >= end:
+                self.channel <<= self.counter
+                self.counter += 1
+
+                if not self.repeatable:
+                    break
+
+                end += self.interval
         else:
             return
 
-        yield from self.finish()
-
-    def finish(self) -> Generator[None, None, None]:
-        self.channel <<= self.counter
-        self.counter += 1
-
-        if self.repeatable:
-            yield from self.wait()
-        else:
-            self.channel.close()
+        self.channel.close()
+        yield
 
     def stop(self) -> None:
+        """
+        Stop the timer and close the channel.
+        """
         self.channel.close()
